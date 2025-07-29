@@ -24,6 +24,8 @@ public class ArticleService {
     }
 
     public Article addArticle(Article article) {
+        Date now = new Date();
+        article.setPublished_at(now);
         return articleRepository.save(article);
     }
 

@@ -8,7 +8,7 @@
               {{ article.title }}
             </router-link>
           </td>
-          <td>{{ new Date(article.updated_at).toISOString().slice(0, 10) }}</td>
+          <td>{{ new Date(article.published_at).toLocaleDateString() }}</td>
         </tr>
       </tbody>
     </table>

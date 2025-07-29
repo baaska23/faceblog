@@ -17,5 +17,14 @@ export const articleService = {
         } catch(error) {
             console.error(error);
         }
+    },
+
+    async addArticle(article) {
+        try {
+            const response = await api.post("/articles", article);
+            return response.data;
+        } catch (error) {
+            console.error(error);
+        }
     }
 }
