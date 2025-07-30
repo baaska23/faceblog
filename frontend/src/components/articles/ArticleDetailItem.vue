@@ -1,7 +1,7 @@
 <template>
   <div v-if="article" class="article-detail">
     <h1>{{ article.title }}</h1>
-    <div class="date">{{ new Date(article.updated_at).toISOString().slice(0, 10) }}</div>
+    <div class="date">{{ new Date(article.updated_at).toLocaleDateString() }}</div>
     <div class="content">{{ article.content }}</div>
     <router-link to="/" class="back-btn">Back</router-link>
   </div>

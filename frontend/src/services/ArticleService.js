@@ -26,5 +26,23 @@ export const articleService = {
         } catch (error) {
             console.error(error);
         }
+    },
+
+    async updateArticle(id, article) {
+        try {
+            const response = await api.patch(`/articles/${id}`, article);
+            return response.data;
+        } catch(error) {
+            console.error(error);
+        }
+    },
+
+    async deleteArticle(id) {
+        try {
+            const response = await api.delete(`/articles/${id}`);
+            return response.data;
+        } catch(error){
+            console.error(error);
+        }
     }
 }
