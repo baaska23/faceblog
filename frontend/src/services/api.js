@@ -1,4 +1,5 @@
 import axios from "axios";
+import {authService} from "@/services/AuthService.js";
 
 const api = axios.create({
     baseURL: 'http://localhost:8080/api',
@@ -8,12 +9,28 @@ const api = axios.create({
     }
 });
 
+api.interceptors.request.use(
+    (config) => {
+        const token = authService.getAuthToken();
+        if (token) {
+            config.headers.Authorization = token;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
 api.interceptors.response.use(
-  response => response,
-  error => {
-    console.error('API Error:', error);
-    return Promise.reject(error);
-  }
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            authService.logout();
+            window.location.href = '/';
+        }
+        return Promise.reject(error);
+    }
 );
 
 export default api;
