@@ -1,6 +1,7 @@
 package com.example.roadmapMyBlog.controllers;
 
 import com.example.roadmapMyBlog.dao.Article;
+import com.example.roadmapMyBlog.services.ArticleSearchService;
 import org.springframework.web.bind.annotation.*;
 import com.example.roadmapMyBlog.services.ArticleService;
 
@@ -11,9 +12,11 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class ArticleController {
     private final ArticleService articleService;
+    private final ArticleSearchService articleSearchService;
 
-    public ArticleController(ArticleService articleService) {
+    public ArticleController(ArticleService articleService, ArticleSearchService articleSearchService) {
         this.articleService = articleService;
+        this.articleSearchService = articleSearchService;
     }
 
     @GetMapping("/articles")
@@ -46,5 +49,10 @@ public class ArticleController {
     @DeleteMapping("/articles/{id}")
     public Article deleteArticleById(@PathVariable int id) {
         return articleService.deleteArticleById(id);
+    }
+    
+    @GetMapping("/search")
+    public List<Article> searchArticleByTrie(@RequestParam String prefix) {
+        return articleSearchService.searchByTitlePrefix(prefix);
     }
 }

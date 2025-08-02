@@ -1,7 +1,7 @@
 <template>
   <div class="home-page">
     <div class="header">
-      <h1 class="page-title">Personal Blog</h1>
+      <h1 class="page-title">FaceBlog</h1>
       <div class="button-group">
         <button @click="openForm()" class="btn btn-primary">
           <span class="btn-icon">+</span>
@@ -15,10 +15,12 @@
     </div>
 
     <div class="content-area">
-      <ArticleItem />
+      <div class="search-area">
+        <input type="search" class="search-bar" v-model="searchPrefix" @input="handleSearchInput"
+               @keyup.passive="searchTrie(searchPrefix)" placeholder="Search article"/>
+      </div>
+      <ArticleItem :articles="articles" />
     </div>
-
-    <!-- Modal -->
     <div v-if="showForm" class="modal-overlay" @click.self="closeForm">
       <div class="modal">
         <div class="modal-header">
@@ -75,15 +77,54 @@ export default {
   },
   data() {
     return {
+      articles: [], // This will hold all articles or search results
       showForm: false,
       title: '',
-      content: ''
+      content: '',
+      searchPrefix: ''
     }
   },
   components: {
     ArticleItem
   },
+
+  async mounted() {
+    // Load all articles when component mounts
+    await this.loadAllArticles();
+  },
+
   methods: {
+    async loadAllArticles() {
+      try {
+        this.articles = await articleService.getArticles(); // or getAllArticles()
+      } catch (error) {
+        console.error('Failed to load articles:', error);
+        this.articles = [];
+      }
+    },
+
+    async searchTrie(prefix) {
+      console.log('Searching for:', prefix); // Debug log
+      try {
+        if (prefix && prefix.trim()) {
+          this.articles = await articleService.searchArticleByTrie(prefix.trim());
+          console.log('Search results:', this.articles.length, 'articles'); // Debug log
+        } else {
+          await this.loadAllArticles();
+        }
+      } catch (error) {
+        console.error('Search failed:', error);
+        this.articles = [];
+      }
+    },
+
+    handleSearchInput() {
+      // If search is cleared, show all articles
+      if (!this.searchPrefix.trim()) {
+        this.loadAllArticles();
+      }
+    },
+
     openForm() {
       this.showForm = true;
     },
@@ -107,10 +148,10 @@ export default {
           published_at: new Date().toISOString()
         });
         this.closeForm();
-        // You might want to refresh the article list here
+        // Refresh articles list
+        await this.loadAllArticles();
       } catch (error) {
         console.error('Failed to publish article:', error);
-        // Add error handling/notification here
       }
     }
   }
@@ -359,6 +400,32 @@ export default {
   margin-top: 2rem;
   padding-top: 1rem;
   border-top: 1px solid #f0f0f0;
+}
+
+.search-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.search-bar {
+  width: 100%;
+  max-width: 400px;
+  padding: 0.75rem 1.25rem;
+  border: 2px solid #e1e5e9;
+  border-radius: 12px;
+  font-size: 1rem;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.07);
+  transition: border-color 0.3s, box-shadow 0.3s;
+  font-family: inherit;
+}
+
+.search-bar:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.12);
+  background: #f5f7fa;
 }
 
 /* Responsive Design */

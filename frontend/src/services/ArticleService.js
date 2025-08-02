@@ -44,5 +44,14 @@ export const articleService = {
         } catch(error){
             console.error(error);
         }
+    },
+
+    async searchArticleByTrie(prefix) {
+        try {
+            const response = await api.get("/search", {params: {prefix}});
+            return response.data;
+        } catch(error) {
+            console.error(error);
+        }
     }
 }

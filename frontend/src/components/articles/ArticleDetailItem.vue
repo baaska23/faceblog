@@ -1,7 +1,13 @@
 <template>
   <div v-if="article" class="article-detail">
     <h1>{{ article.title }}</h1>
-    <div class="date">{{ new Date(article.updated_at).toLocaleDateString() }}</div>
+    <div class="date">
+      {{
+        (article.updated_at > article.published_at)
+            ? new Date(article.updated_at).toLocaleDateString()
+            : new Date(article.published_at).toLocaleDateString()
+      }}
+    </div>
     <div class="content">{{ article.content }}</div>
     <router-link to="/" class="back-btn">Back</router-link>
   </div>
@@ -55,53 +61,200 @@ export default {
 </script>
 
 <style scoped>
+/* Improved styles for ArticleDetailItem component */
+
 .article-detail {
-  margin-top: 32px;
-  padding: 32px;
-  background: #f9f9f9;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: white;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
+  max-width: 800px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.article-detail h1 {
+  margin: 0 0 1rem 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  line-height: 1.3;
+  border-bottom: 3px solid #4f46e5;
+  padding-bottom: 0.75rem;
 }
 
 .date {
-  font-size: 0.95rem;
-  color: #888;
-  margin-bottom: 24px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #6b7280;
+  background: #f3f4f6;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.date::before {
+  content: "📅";
+  margin-right: 0.5rem;
+  font-size: 0.8rem;
 }
 
 .content {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   line-height: 1.7;
-  color: #222;
+  color: #374151;
   white-space: pre-line;
-  background: #fff;
-  padding: 24px;
+  background: #f9fafb;
+  padding: 1.5rem;
   border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(25,118,210,0.07);
+  border-left: 4px solid #4f46e5;
+  margin-bottom: 1.5rem;
+  font-family: 'Georgia', 'Times New Roman', serif;
 }
 
-.loading, .error {
+.loading {
   text-align: center;
-  padding: 32px;
+  padding: 3rem 2rem;
   font-size: 1.1rem;
+  color: #6b7280;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
+  max-width: 400px;
+  margin: 2rem auto;
+}
+
+.loading::before {
+  content: "⏳";
+  display: block;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 .error {
-  color: #d32f2f;
+  text-align: center;
+  padding: 3rem 2rem;
+  font-size: 1.1rem;
+  color: #dc2626;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #fecaca;
+  max-width: 400px;
+  margin: 2rem auto;
+}
+
+.error::before {
+  content: "❌";
+  display: block;
+  font-size: 2rem;
+  margin-bottom: 1rem;
 }
 
 .back-btn {
-  display: inline-block;
-  padding: 8px 24px;
-  background: #1976d2;
-  color: #fff;
-  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: #4f46e5;
+  color: white;
+  border-radius: 8px;
   text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  margin-top: 1rem;
+}
+
+.back-btn::before {
+  content: "←";
+  font-size: 1rem;
   font-weight: bold;
-  transition: background 0.2s;
-  margin-top: 24px;
+}
+
+.back-btn:hover {
+  background: #4338ca;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.back-btn:active {
+  transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .article-detail {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .article-detail h1 {
+    font-size: 1.75rem;
+  }
+
+  .content {
+    font-size: 1rem;
+    padding: 1.25rem;
+  }
+
+  .loading,
+  .error {
+    margin: 1rem;
+    padding: 2rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .article-detail {
+    margin: 0.5rem;
+    padding: 1.25rem;
+  }
+
+  .article-detail h1 {
+    font-size: 1.5rem;
+  }
+
+  .content {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    padding: 1rem;
+  }
+
+  .date {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .back-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 1rem 1.5rem;
+  }
 }
 </style>

@@ -17,7 +17,7 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
-    private UserService userService;
+    private final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -38,14 +38,18 @@ public class UserController {
         }
 
         Optional<User> userOpt = userRepository.findByUsername(username);
-
         if (userOpt.isPresent() && userOpt.get().getPassword().equals(password)) {
+            User foundUser = userOpt.get();
             return ResponseEntity.ok(Map.of(
                     "message", "Login successful",
-                    "user", Map.of("id", userOpt.get().getId(), "username", username)
+                    "user", Map.of(
+                            "id", foundUser.getId(),
+                            "username", foundUser.getUsername(),
+                            "role", foundUser.getRole(),
+                            "enabled", foundUser.isEnabled()
+                    )
             ));
-        } else {
-            return ResponseEntity.status(401).body(Map.of("error", "Invalid username or password"));
         }
+        return ResponseEntity.status(401).body(Map.of("error", "Invalid username or password"));
     }
 }
