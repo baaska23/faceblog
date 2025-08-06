@@ -77,7 +77,7 @@ export default {
   },
   data() {
     return {
-      articles: [], // This will hold all articles or search results
+      articles: [],
       showForm: false,
       title: '',
       content: '',
@@ -89,14 +89,13 @@ export default {
   },
 
   async mounted() {
-    // Load all articles when component mounts
     await this.loadAllArticles();
   },
 
   methods: {
     async loadAllArticles() {
       try {
-        this.articles = await articleService.getArticles(); // or getAllArticles()
+        this.articles = await articleService.getArticles();
       } catch (error) {
         console.error('Failed to load articles:', error);
         this.articles = [];
@@ -104,7 +103,7 @@ export default {
     },
 
     async searchTrie(prefix) {
-      console.log('Searching for:', prefix); // Debug log
+      console.log('Searching for:', prefix);
       try {
         if (prefix && prefix.trim()) {
           this.articles = await articleService.searchArticleByTrie(prefix.trim());
@@ -275,7 +274,6 @@ export default {
   margin: 0 auto;
 }
 
-/* Modal Styles */
 .modal-overlay {
   position: fixed;
   top: 0;
