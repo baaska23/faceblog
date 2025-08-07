@@ -19,8 +19,14 @@ public class CommentController {
     public List<Comment> getComments() {
         return commentService.getComments();
     }
-    @PostMapping("/comments")
-    public Comment addComment(@RequestBody Comment comment) {
-        return commentService.addComment(comment);
+    
+    @GetMapping("/comments-per-article/{id}")
+    public List<Comment> getCommentsPerArticle(@PathVariable int id) {
+        return commentService.getCommentsPerArticle(id);
+    }
+    
+    @PostMapping("/comments/{articleId}")
+    public Comment addComment(@RequestBody Comment comment, @PathVariable int articleId) {
+        return commentService.addComment(comment, articleId);
     }
 }

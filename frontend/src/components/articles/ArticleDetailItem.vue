@@ -33,11 +33,11 @@
           <span class="comments-icon">💬</span>
           Comments ({{ comments.length }})
         </h3>
-        <div v-if="comments.length === 0" class="no-comments">
+        <div v-if="comments && comments.length === 0" class="no-comments">
           <span class="no-comments-icon">🤔</span>
           <p>No comments yet. Be the first to share your thoughts!</p>
         </div>
-        <div v-else class="comments-list">
+        <div v-else-if="comments && comments.length > 0" class="comments-list">
           <div v-for="item in comments" :key="item.id" class="comment-item">
             <div class="comment-header">
               <span class="comment-author">{{ item.commentingUser }}</span>
@@ -109,14 +109,15 @@ export default {
       showForm: false,
       comment: '',
       comments: [],
-      commentingUser: null
+      commentingUser: null,
+      currentArticleId: null
     }
   },
 
   async mounted() {
     const id = this.$route.params.id;
     await this.fetchArticle(id);
-    this.loadAllComments();
+    this.loadCommentsPerArticle();
   },
 
   watch: {
@@ -153,18 +154,20 @@ export default {
       try{
         await commentService.addComment(
             {comment: this.comment,
-              commentingUser: authService.getCurrentUser().username}
+              commentingUser: authService.getCurrentUser().username,
+            },
+            this.article.id
         )
         this.closeForm();
-        await this.loadAllComments();
+        await this.loadCommentsPerArticle();
       } catch (error) {
         console.error(error);
       }
     },
 
-    async loadAllComments() {
+    async loadCommentsPerArticle() {
       try {
-        this.comments = await commentService.getComments();
+        this.comments = await commentService.getCommentsPerArticle(this.article.id);
       } catch(error) {
         console.error(error);
         this.comments = [];

@@ -11,12 +11,18 @@ public class Comment {
     private String commentingUser;
     private String comment;
     
+    
+    @ManyToOne
+    @JoinColumn(name = "article_id", nullable = true)
+    private Article article;
+    
     public Comment() {}
     
-    public Comment(Integer id, String commentingUser, String comment) {
+    public Comment(Integer id, String commentingUser, String comment, Article article) {
         this.id = id;
         this.commentingUser = commentingUser;
         this.comment = comment;
+        this.article = article;
     }
     
     public Integer getId() {
@@ -42,4 +48,8 @@ public class Comment {
     public void setComment(String comment) {
         this.comment = comment;
     }
+    
+    public Article getArticle() { return article; }
+    
+    public void setArticle(Article article) { this.article = article; }
 }
