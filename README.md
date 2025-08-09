@@ -7,6 +7,7 @@ FaceBlog is a full-stack web application that enables users to publish, edit, an
 The application provides comprehensive article management capabilities with user authentication and role-based access control. Users can perform the following operations:
 
 - Add, update, and delete articles
+- Comment on articles
 - Search articles by title
 - Secure login with role-based access control (RBAC) for editing and deletion operations
 
@@ -18,6 +19,13 @@ Each article contains the following attributes:
 - **content**: The main body content of the article
 - **published_at**: The date and time when the article was created
 - **updated_at**: The date and time when the article was last modified
+
+Each comment contains the following attributes:
+
+- **id**: A unique identifier for the comment
+- **commenting_user**: Name of user who comments
+- **article_id**: The id of corresponding article
+- **comment**: The comment on corresponding article
 
 ## API Reference
 
@@ -51,11 +59,22 @@ GET /api/auth/users
 POST /api/auth/login
 ```
 
+#### Send comment
+```http
+POST /api/comments/{articleId}
+```
+
+#### Get comments by article
+```http
+GET /api/comments-per-article/{id}
+```
+
 ## Features
 - Full-stack development with modern technologies
 - Autocomplete search functionality
 - Session storage for user state management
 - Role-based access control (RBAC)
+- Commenting logic
 - Responsive user interface
 
 ## Tech Stack
